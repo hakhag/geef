@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Geef - Interactive .gif</title>
+	<link rel="stylesheet" href="">
+</head>
+
+<style type="text/css">
+	* {
+		margin:0;
+		padding:0;
+	}
+
+	body {
+		background-color:#ececec;
+	}
+
+	.geef-wrapper {
+		border:1px solid #dedede;
+		overflow: hidden;
+		position: relative;
+		width:718px;
+		height:405px;
+		margin:50px auto 50px auto;
+		cursor: pointer;
+	}
+
+	.geef-wrapper img {
+		position: absolute;
+		top:0;
+		left:0;
+		display: block;
+	}
+
+	.timeline {
+		height:6px;
+		width:0%;
+		background-color:#d80000;
+		position: absolute;
+		bottom:0;
+		left:0;
+	}
+
+	.line {
+		border-left:1px solid red;
+		height:100%;
+		position: absolute;
+		opacity: 0.4;
+		left:0;
+		background-color:green;
+	}
+
+	.line:hover {
+		opacity: 0.7;
+	}
+</style>
+
+<body>
+
+	<div class="geef-wrapper">
+		<img src="img/waffles_tile.jpg" class="geef-scrubber" alt="">
+		<div class="timeline"></div>
+	</div>
+
+<!-- 	<div class="geef-wrapper" style="width:400px; height:225px">
+		<img src="img/waffles_tile_med.jpg" class="geef-scrubber" alt="">
+	</div> -->
+
+</body>
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.geef.js"></script>
+
+<script>
+	$(document).ready(function(){
+		$('.geef-wrapper').geef();
+	});
+</script>
+
+</html>
