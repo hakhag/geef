@@ -10,7 +10,8 @@
 		return this.each(function() {
 			appendDOM(this);
 
-			var img = $(this).find('img.geef-scrubber'),
+			var _this = this,
+				img = $(this).find('img.geef-scrubber'),
 				timeline = $(this).find('.timeline');
 
 			this.attrs = {
@@ -30,17 +31,28 @@
 			// startAnimation(this);
 			// appendPoints(this);
 
-			$(this).mouseenter(function() {
-				stopAnimation(this);
+
+			$(this.attrs.scrubber).mouseenter(function() {
+				// stopAnimation(this);
 			}).mousemove(function(e){
-				scrubToFrame(e, this);
+				scrubToFrame(e, _this);
 			}).mouseleave(function(){
-				startAnimation(this);
+				// startAnimation(_this);
 			});
+
+
+			$(this).find('.control').mouseenter(function(){
+				startAnimation(_this);
+				$(this).find('i.fa').removeClass('fa-play').addClass('fa-pause')
+			}).mouseleave(function(){
+				stopAnimation(_this);
+				$(this).find('i.fa').removeClass('fa-pause').addClass('fa-play')
+			});
+
 		});
 
 		function appendDOM(geef) {
-			$(geef).append('<div class="timeline"></div>');
+			$(geef).append('<div class="timeline"></div>').append('<div class="control"><i class="fa fa-play"></i></div>');
 		}
 
 		function startAnimation(geef) {
