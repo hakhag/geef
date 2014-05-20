@@ -5,14 +5,18 @@
 			speed: 45,
 		},
 
+
 		settings = $.extend({}, defaults, options);
 
 		return this.each(function() {
 
+			// Append timeline and control
 			appendDOM(this);
 
+			// Get stuff
 			var _this = this,
 				scrubber = $(this).find('img.geef-scrubber'),
+				scrubberHeight =  scrubber.innerHeight(),
 				frameHeight = scrubber.innerHeight() / (scrubber.innerHeight() / $(this).innerHeight()),
 				frameWidth = scrubber.innerWidth(),
 				framesCount = (scrubber.innerHeight() / frameHeight)-1,
@@ -26,6 +30,7 @@
 				t: 0,
 				interval: null,
 				scrubber: scrubber,
+				scrubberHeight: scrubberHeight,
 				timeline: timeline,
 				framesCount: framesCount,
 				spacing: spacing,
@@ -64,11 +69,11 @@
 		function startAnimation(geef) {
 			var attrs = geef.attrs;
 			attrs.interval = setInterval(function(){
-				var perc = (Math.abs(attrs.t) / attrs.scrubber.outerHeight()) * 100;
+				var perc = (Math.abs(attrs.t) / attrs.scrubberHeight) * 100;
 				attrs.scrubber.css('top', attrs.t + 'px');
 				attrs.t -= attrs.frame.height;
 				animateTimeline(geef, perc);
-				if (attrs.t <= -attrs.scrubber.outerHeight()) {
+				if (attrs.t == -attrs.scrubberHeight) {
 					attrs.t = 0;
 				}
 			}, settings.speed);
@@ -98,8 +103,7 @@
 		}
 
 		function animateTimeline(geef, width) {
-			width = Math.ceil(width);
-			geef.attrs.timeline.css('width', width + '%');
+			geef.attrs.timeline.css('width', Math.ceil(width) + '%');
 		}
 	}
 
