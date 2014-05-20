@@ -2,56 +2,62 @@
 
 	$.fn.geef = function(options){
 		var defaults = {
-			speed: 40,
+			speed: 45,
 		},
 
 		settings = $.extend({}, defaults, options);
 
 		return this.each(function() {
+
 			appendDOM(this);
 
 			var _this = this,
-				img = $(this).find('img.geef-scrubber'),
-				timeline = $(this).find('.timeline');
+				scrubber = $(this).find('img.geef-scrubber'),
+				frameHeight = scrubber.innerHeight() / (scrubber.innerHeight() / $(this).innerHeight()),
+				frameWidth = scrubber.innerWidth(),
+				framesCount = (scrubber.innerHeight() / frameHeight)-1,
+				spacing = frameWidth / framesCount;
+				timeline = $(this).find('.timeline'),
+				control = $(this).find('.control'),
+				controlIcon = control.find('i.fa');
 
+			// Build an object to use everywhere
 			this.attrs = {
 				t: 0,
 				interval: null,
-				scrubber: img,
+				scrubber: scrubber,
 				timeline: timeline,
+				framesCount: framesCount,
+				spacing: spacing,
 				frame: {				
-					width: img.outerWidth(),
-					height: img.outerHeight() / (img.outerHeight() / $(this).innerHeight())
+					width: frameWidth,
+					height: frameHeight,
 				},
+				controls: {
+					control: control,
+					controlIcon: controlIcon,
+				}
 			};
 
-			this.attrs.framesCount = (this.attrs.scrubber.outerHeight() / this.attrs.frame.height)-1;
-			this.attrs.spacing = this.attrs.frame.width / this.attrs.framesCount;
-
-			// startAnimation(this);
 			// appendPoints(this);
 
-
-			$(this.attrs.scrubber).mouseenter(function() {
-				// stopAnimation(this);
-			}).mousemove(function(e){
+			// Scrubber handlers
+			this.attrs.scrubber.mousemove(function(e){
 				scrubToFrame(e, _this);
-			}).mouseleave(function(){
-				// startAnimation(_this);
 			});
 
-
-			$(this).find('.control').mouseenter(function(){
+			// Control handlers
+			this.attrs.controls.control.mouseenter(function(){
 				startAnimation(_this);
-				$(this).find('i.fa').removeClass('fa-play').addClass('fa-pause')
+				_this.attrs.controls.controlIcon.removeClass('fa-play').addClass('fa-pause')
 			}).mouseleave(function(){
 				stopAnimation(_this);
-				$(this).find('i.fa').removeClass('fa-pause').addClass('fa-play')
+				_this.attrs.controls.controlIcon.removeClass('fa-pause').addClass('fa-play')
 			});
 
 		});
 
-		function appendDOM(geef) {
+		function appendDOM(geef) {	
 			$(geef).append('<div class="timeline"></div>').append('<div class="control"><i class="fa fa-play"></i></div>');
 		}
 
@@ -92,7 +98,8 @@
 		}
 
 		function animateTimeline(geef, width) {
-			geef.attrs.timeline.css('width', Math.floor(width) + '%');
+			width = Math.ceil(width);
+			geef.attrs.timeline.css('width', width + '%');
 		}
 	}
 
