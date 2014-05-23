@@ -3,31 +3,21 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Geef - Interactive .gif</title>
+	<title>Interactive ".gif"</title>
+	<link rel="stylesheet" href="http://dbtv.no/stylesheets/app-1.1.5.min.css">
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <style type="text/css">
-	* {
-		margin:0;
-		padding:0;
-		-webkit-box-sizing: border-box; 
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;   
-	}
-
-	body {
-		background-color:#ececec;
-		padding-top:1px;
-	}
-
 	.geef-wrapper {
 		overflow: hidden;
 		position: relative;
-		width:718px;
-		height:405px;
-		margin:50px auto 50px auto;
 		cursor: pointer;
+		padding:0;
+	}
+
+	.geef-wrapper.example {
+		/*margin:50px auto 50px auto;*/
 	}
 
 	.geef-wrapper img.geef-scrubber {
@@ -35,12 +25,13 @@
 		top:0;
 		left:0;
 		display: block;
+		width: 100%;
 	}
 
 	.timeline {
 		height:6px;
 		width:0%;
-		background-color:#d80000;
+		background-color:#d60000;
 		position: absolute;
 		bottom:0;
 		left:0;
@@ -72,20 +63,112 @@
 	.line:hover {
 		opacity: 0.7;
 	}
+
+	.card {
+		/*border-width: 15px;*/
+	}
+
+	.row {
+		margin-top:50px;
+	}
 </style>
 
 <body>
-	<div class="geef-wrapper">
+
+	<div class="row">
+
+		<div class="large-6 columns">
+			<article class="card video">
+				<a href="/2941690819001" class="thumbnail">
+					<span class="label duration">00:21</span>
+					<!-- <img src="http://gfx.dbtv.no/thumbs/still/26525.jpg" alt="poster"> -->
+					<div class="geef-wrapper">
+						<img src="img/waffles_tile.jpg" class="geef-scrubber" alt="">
+					</div>
+				</a>
+				<div class="body">
+					<div class="inner">
+						<h1 class="heading"><a href="/2941690819001">Waffles tigersprang får alle til å le</a></h1>
+						<p class="description"><b>OPTIMIST:</b> Waffles er blitt huskatten til reklamebyrået Yak Studios i New York, som sier han mislykkes med ting hver eneste dag. I går prøvde han seg på et tigersprang som gjør at han nå også er internettkjendis. Video: Yak Studios</p>
+						<time pubdate="">Publisert for 5 måneder siden</time>
+						<ul class="actions hide">
+							<li><a href="#">Se senere</a></li>
+							<li><a href="#">[x] kommentarer</a></li>
+							<li><a href="#">[x] kapitler</a></li>
+						</ul>
+					</div>
+				</div>
+			</article>
+		</div>
+
+		<div class="large-6 columns">
+			<article class="card video">
+				<a href="/3457314350001" class="thumbnail">
+					<span class="label duration">02:18</span>
+					<div class="geef-wrapper">
+						<img src="img/failcat.jpg" class="geef-scrubber" alt="">
+					</div>
+				</a>
+				<div class="body">
+					<div class="inner">
+						<h1 class="heading"><a href="/3457314350001">Katten gjør seg klar til å angripe fiskene i akvariet</a></h1>
+						<p class="description"><b>KATT VS. FISK: </b>Tyske Patrick Asmus hang med vennene sine på rommet da de oppdaget at hans katt, Tina, oppførte seg rart. Når den forsøker å hoppe opp på akvariet, bryter gjengen ut i latterkrampe. Katten ble ikke skadd. Video: Patrick Asmus</p>
+						<time pubdate="">Publisert for 3 uker siden</time>
+						<ul class="actions hide">
+							<li><a href="#">Se senere</a></li>
+							<li><a href="#">[x] kommentarer</a></li>
+							<li><a href="#">[x] kapitler</a></li>
+						</ul>
+					</div>
+				</div>
+			</article>
+		</div>
+	</div>
+
+
+<!-- 	<a href="#" class="geef-wrapper">
 		<img src="img/waffles_tile.jpg" class="geef-scrubber" alt="">
+	</a> -->
+
+<!-- 		<div class="large-4 columns">
+			</article>
+				<article class="card video">
+				<a href="/3577737018001" class="thumbnail">
+					<span class="label duration">02:21</span>
+					<img src="http://gfx.dbtv.no/thumbs/still/31806.jpg" alt="poster">
+				</a>
+				<div class="body">
+					<div class="inner">
+						<h1 class="heading"><a href="/3577737018001">Forbipasserende ser ikke at modellen nesten er naken</a></h1>
+						<p class="description"><b>SKOLEOPPGAVE:</b> I april fikk de belgiske reklamestudentene Sarah Baborop og David Lesage i oppgave å lage en såkalt viral video. De bestemte seg for å påføre en modell kroppsmaling, og sende henne ut på gata. Video: Sarah Baborop / David Lesage</p>
+						<time pubdate="">Publisert for 2 dager siden</time>
+						<ul class="actions hide">
+							<li><a href="#">Se senere</a></li>
+							<li><a href="#">[x] kommentarer</a></li>
+							<li><a href="#">[x] kapitler</a></li>
+						</ul>
+					</div>
+				</div>
+			</article>
+		</div>		
+	</div> -->
+
+<!-- 	<div class="row">
+		<div class="large-12 columns">
+		 	<div class="geef-wrapper example">
+				<img src="img/waffles_tile.jpg" class="geef-scrubber" alt="">
+			</div>
+		</div>
 	</div>
 
-	<div class="geef-wrapper" style="width:512px; height:288px">
-		<img src="img/failcat.jpg" class="geef-scrubber" alt="">
-	</div>
+	<div class="row">
+		<div class="large-12 columns">
+			<div class="geef-wrapper example" style="width:512px; height:288px">
+				<img src="img/failcat.jpg" class="geef-scrubber" alt="">
+			</div>
+		</div>
+	</div> -->
 
-	<div class="geef-wrapper" style="width:250px; height:140px">
-		<img src="img/xbox_small.jpg" class="geef-scrubber" alt="">
-	</div>
 </body>
 
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
