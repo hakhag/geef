@@ -4,11 +4,16 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Interactive ".gif"</title>
-	<link rel="stylesheet" href="http://dbtv.no/stylesheets/app-1.1.5.min.css">
+	<link rel="stylesheet" href="http://dbtv.no/stylesheets/dist/app-1.7.3.min.css">
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <style type="text/css">
+
+	h1.outer {
+		margin-bottom: 0px;
+	}
+
 	.geef-wrapper {
 		overflow: hidden;
 		position: relative;
@@ -20,7 +25,7 @@
 		/*margin:50px auto 50px auto;*/
 	}
 
-	.geef-wrapper img.geef-scrubber {
+	.geef-wrapper img.geef {
 		position: absolute;
 		top:0;
 		left:0;
@@ -41,13 +46,14 @@
 		position: absolute;
 		top:0px;
 		right:0px;
-		padding:15px;
+		padding:14px;
 		background: #000;
-		background: rgba(0,0,0,0.6);
+		background: rgba(0,0,0,0.4);
 		z-index:9999999;
 	}
 
 	.control i.fa {
+		font-size:20px;
 		color:#fff;
 	}
 
@@ -77,13 +83,19 @@
 
 	<div class="row">
 
+
+		<div class="large-12 columns">
+			<h1 class="outer">Geef!</h1>
+			<p>Scrub the images or hover the play-icon to watch some cool shit unfold!</p>
+		</div>
+
 		<div class="large-6 columns">
 			<article class="card video">
-				<a href="/2941690819001" class="thumbnail">
+				<a href="http://dbtv.no/2941690819001" class="thumbnail">
 					<span class="label duration">00:21</span>
 					<!-- <img src="http://gfx.dbtv.no/thumbs/still/26525.jpg" alt="poster"> -->
 					<div class="geef-wrapper">
-						<img src="img/waffles_tile.jpg" class="geef-scrubber" alt="">
+						<img src="img/waffles.jpg" class="geef" alt="Waffles!">
 					</div>
 				</a>
 				<div class="body">
@@ -106,7 +118,7 @@
 				<a href="/3457314350001" class="thumbnail">
 					<span class="label duration">02:18</span>
 					<div class="geef-wrapper">
-						<img src="img/failcat.jpg" class="geef-scrubber" alt="">
+						<img src="img/failcat.jpg" class="geef" alt="">
 					</div>
 				</a>
 				<div class="body">

@@ -3,7 +3,9 @@
 	$.fn.geef = function(options){
 		var defaults = {
 			speed: 45,
-			responsive: true
+			responsive: true,
+			tileImagePostfix: '_tile',
+			filetype: 'jpg'
 		},
 
 		settings = $.extend({}, defaults, options);
@@ -17,68 +19,102 @@
 			// Sets the height of .geef-wrapper
 			// Caveat: it assumes frame is 16:9
 			// $(this).css('height', setHeight(this.getBoundingClientRect().width) + 'px');
-			$(this).css('height', Math.floor(setHeight($(this).innerWidth())) + 'px');
+			$(this).css('height', setHeight($(this).innerWidth()) + 'px');
 
 			// Builds object properties
-			this.attrs = init(this);
-			// console.log(this.attrs);
+			var geef = initGeef(this);
+			// console.log(sf);
 
-			// Bind window resize, perhaps not needed
-			if(settings.responsive) {
-				$(window).on('resize', function(){
-					$(_this).css('height', setHeight(_this.getBoundingClientRect().width) + 'px');
-					_this.attrs = init(_this);
-				});
-			}
+			// Bind window resize, perhaps not needed. This re-initalizes everything!
+			// if(settings.responsive) {
+			// 	$(window).on('resize', function(){
+			// 		$(_this).css('height', setHeight(_this.getBoundingClientRect().width) + 'px');
+			// 		_singleFrame = initGeef(_this);
+			// 	});
+			// }
 
-			// appendPoints(this);
+			// Change the src on first mousover, initialize the tiles
+			geef.image.mouseenter(function(){
+				if(geef.tiles) { // src is set and tiles are initiated
+					console.log('tiles is already set, doing nerfin');
+					return;
+				}
 
-			// Scrubber handlers
-			this.attrs.scrubber.mousemove(function(e){
-				scrubToFrame(e, _this);
+				changeSrc(this);
+			});
+
+			// singleframe handlers
+			geef.image.mousemove(function(e){
+				if(!geef.tiles) {
+					console.log('Tiles is not set, returning..');
+					return;
+				} else {
+					scrubToFrame(e, geef);
+				}
 			});
 
 			// Control handlers
-			this.attrs.controls.control.mouseenter(function(){
-				startAnimation(_this);
+			geef.controls.control.mouseenter(function(){
+				if(!geef.tiles) {
+					changeSrc(geef.image);
+				}
+				startAnimation(geef);
 			}).mouseleave(function(){
-				stopAnimation(_this);
+				stopAnimation(geef);
 			});
+
+			var changeSrc = function(image){
+
+				geef.controls.controlIcon.removeClass('fa-play').addClass('fa-spinner');
+
+				var src = $(image).attr('src').slice(0, -4); // Remove the file extension
+
+				$(image).load(function(){
+					geef.tiles = initTiles(geef, this);
+					geef.controls.controlIcon.removeClass('fa-spinner').addClass('fa-play');
+				}).attr('src', src + settings.tileImagePostfix +'.' + settings.filetype);
+
+				// appendPoints(geef);
+			}
+
 		});
 
-		// Basically make everything
-		function init(self) {
-			var scrubber = $(self).find('img.geef-scrubber'),
-				scrubberHeight = scrubber.innerHeight(),
-				frameHeight = scrubber.innerHeight() / (scrubber.innerHeight() / $(self).innerHeight()),
-				frameWidth = scrubber.innerWidth(),
-				framesCount = (scrubber.innerHeight() / frameHeight)-1, //-1 to remove last frame, avoid flashing
-				spacing = frameWidth / framesCount;
-				timeline = $(self).find('.timeline'),
-				control = $(self).find('.control'),
+		// Creates the logic for the single frame. When the tile-image is loaded, this is used to create more logic!
+		function initGeef(geefWrapper) {
+			var image = $(geefWrapper).find('img.geef'),
+				imageWidth = image.innerWidth(),
+				imageHeight = image.innerHeight(),
+				timeline = $(geefWrapper).find('.timeline'),
+				control = $(geefWrapper).find('.control'),
 				controlIcon = control.find('i.fa');
 
-			var attrs = {
-				t: 0,
+			return {
+				posTop: 0,
 				interval: null,
-				scrubber: scrubber,
-				scrubberHeight: scrubberHeight,
+				wrapper: geefWrapper,
+				image: image,
+				imageWidth: imageWidth,
+				imageHeight: imageHeight,
 				timeline: timeline,
-				framesCount: framesCount,
-				spacing: spacing,
-				frame: {				
-					width: frameWidth,
-					height: frameHeight,
-				},
+				tiles: null,
 				controls: {
 					control: control,
-					controlIcon: controlIcon,
+					controlIcon: controlIcon
 				}
 			};
-
-			return attrs;
 		}
 
+		function initTiles(singleframe, tiles) {
+			var tileHeight = $(tiles).innerHeight(),
+				framesCount = (tileHeight / singleframe.imageHeight)-1, //-1 to remove last frame, avoid flashing
+				spacing = singleframe.imageWidth / framesCount;
+
+			return {
+				tileHeight: tileHeight,
+				framesCount: framesCount,
+				spacing: spacing
+			};
+		}
 
 		// Setting height of .geef-wrapper
 		function setHeight(height) {
@@ -88,59 +124,58 @@
 
 		// Append timeline and play/pause controller
 		function appendDOM(geef) {	
-			$(geef).append('<div class="timeline"></div>').append('<div class="control"><i class="fa fa-play"></i></div>');
+			$(geef).append('<div class="timeline"></div><div class="control"><i class="fa fa-play"></i></div>');
+		}
+
+		function scrubToFrame(e, geef) {
+			var posX = e.pageX - $(geef.wrapper).offset().left,
+				percentagePosX = Math.ceil((posX * 100) / geef.imageWidth),	
+				activeFrame = Math.ceil((posX / geef.tiles.spacing));
+
+			if(activeFrame <= geef.tiles.framesCount) {
+				geef.posTop = -Math.abs(activeFrame * geef.imageHeight);
+				geef.image.css('top', geef.posTop + 'px');
+				// console.log('scrubbed to', geef.image.css('top'));
+				animateTimeline(geef, percentagePosX);	
+			}
 		}
 
 		//Start the animation
 		function startAnimation(geef) {
-			var attrs = geef.attrs,
-				perc = 0,
+			var perc = 0,
 				activeFrame = 1;
+
 			// console.log('Frameheight:', attrs.frame.height);
-			attrs.controls.controlIcon.removeClass('fa-play').addClass('fa-pause');
+			geef.controls.controlIcon.removeClass('fa-play').addClass('fa-pause');
 			
-			attrs.interval = setInterval(function(){
-				perc = (Math.abs(attrs.t) / attrs.scrubberHeight) * 100;
-				attrs.t -= attrs.frame.height;
-				attrs.scrubber.css('top', attrs.t + 'px');
-				console.log('Frame:', activeFrame + ' Position:', attrs.t);
+			geef.interval = setInterval(function(){
+				perc = (Math.abs(geef.posTop) / geef.tiles.tileHeight) * 100;
+				geef.posTop -= geef.imageHeight;
+				geef.image.css('top', geef.posTop + 'px');
+				// console.log('Frame:', activeFrame + ' Position:', geef.posTop);
 				animateTimeline(geef, perc);
 				activeFrame++;
-				if (attrs.t <= -attrs.scrubberHeight) {
-					attrs.t = 0;
+				if (geef.posTop <= -geef.tiles.tileHeight) {
+					geef.posTop = 0;
 				}
 			}, settings.speed);
 		}
 
 		//DEBUG function - used to append segment tiles on image
-		function appendPoints(geef) { 
-			for(var i = 0; i < geef.attrs.framesCount; i++) {
-				$(geef).append('<div class="line" style="width:'+ geef.attrs.spacing +'px; left:'+ i*geef.attrs.spacing +'px"></div>');
+		function appendPoints(geef) {
+			for(var i = 0; i < geef.tiles.framesCount; i++) {
+				$(geef).append('<div class="line" style="width:'+ geef.tiles.spacing +'px; left:'+ i*geef.tiles.spacing +'px"></div>');
 			}
 		} 
 
 		function stopAnimation(geef) {
-			var attrs = geef.attrs;
-			attrs.controls.controlIcon.removeClass('fa-pause').addClass('fa-play');
-			clearInterval(attrs.interval);
-			attrs.interval = null;
+			geef.controls.controlIcon.removeClass('fa-pause').addClass('fa-play');
+			clearInterval(geef.interval);
+			geef.interval = null;
 		}
 
-		function scrubToFrame(e, geef) {
-			var posX = e.pageX - $(geef).offset().left,
-				percentagePosX = (posX * 100) / geef.attrs.frame.width,	
-				activeFrame = Math.ceil((posX / geef.attrs.spacing));
-			console.log(activeFrame);
-
-			if(activeFrame <= geef.attrs.framesCount) {
-				geef.attrs.t = -Math.abs(activeFrame * geef.attrs.frame.height);
-				geef.attrs.scrubber.css('top', geef.attrs.t + 'px');
-				animateTimeline(geef, percentagePosX);	
-			}
-		} 
-
 		function animateTimeline(geef, width) {
-			geef.attrs.timeline.css('width', Math.ceil(width) + '%');
+			geef.timeline.css('width', Math.ceil(width) + '%');
 		}
 	}
 
