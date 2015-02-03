@@ -3,7 +3,7 @@
 	$.fn.geef = function(options){
 		var defaults = {
 			speed: 45,
-			responsive: true,
+			responsive: false,
 			tileImagePostfix: '_tile',
 			filetype: 'jpg'
 		},
@@ -26,12 +26,12 @@
 			// console.log(sf);
 
 			// Bind window resize, perhaps not needed. This re-initalizes everything!
-			// if(settings.responsive) {
-			// 	$(window).on('resize', function(){
-			// 		$(_this).css('height', setHeight(_this.getBoundingClientRect().width) + 'px');
-			// 		_singleFrame = initGeef(_this);
-			// 	});
-			// }
+			if(settings.responsive) {
+				$(window).on('resize', function(){
+					$(_this).css('height', setHeight(_this.getBoundingClientRect().width) + 'px');
+					_singleFrame = initGeef(_this);
+				});
+			}
 
 			// Change the src on first mousover, initialize the tiles
 			geef.image.mouseenter(function(){
@@ -43,7 +43,7 @@
 				changeSrc(this);
 			});
 
-			// singleframe handlers
+			// Singleframe handlers
 			geef.image.mousemove(function(e){
 				if(!geef.tiles) {
 					console.log('Tiles is not set, returning..');
@@ -64,7 +64,6 @@
 			});
 
 			var changeSrc = function(image){
-
 				geef.controls.controlIcon.removeClass('fa-play').addClass('fa-spinner');
 
 				var src = $(image).attr('src').slice(0, -4); // Remove the file extension
@@ -76,7 +75,6 @@
 
 				// appendPoints(geef);
 			}
-
 		});
 
 		// Creates the logic for the single frame. When the tile-image is loaded, this is used to create more logic!
