@@ -2,7 +2,7 @@
 
 	$.fn.geef = function(options){
 		var defaults = {
-			speed: 500,
+			speed: 45,
 			responsive: false,
 			tileImagePostfix: '_tile',
 			filetype: 'jpg'
