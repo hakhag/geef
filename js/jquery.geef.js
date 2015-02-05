@@ -2,11 +2,16 @@
 
 	$.fn.geef = function(options){
 		var defaults = {
-			speed: 45,
+			speed: 500,
 			responsive: false,
 			tileImagePostfix: '_tile',
 			filetype: 'jpg'
 		},
+
+
+		// perfect ratio: 1.777777778
+		// height of wrapper: 468
+		// SUM: 468*1,777777778 = 832,000000104
 
 		settings = $.extend({}, defaults, options);
 
@@ -19,7 +24,7 @@
 			// Sets the height of .geef-wrapper
 			// Caveat: it assumes frame is 16:9
 			// $(this).css('height', setHeight(this.getBoundingClientRect().width) + 'px');
-			$(this).css('height', setHeight($(this).innerWidth()) + 'px');
+			$(this).css('height', setHeight($(this).outerWidth()) + 'px');
 
 			// Builds object properties
 			var geef = initGeef(this);
@@ -104,8 +109,10 @@
 
 		function initTiles(singleframe, tiles) {
 			var tileHeight = $(tiles).innerHeight(),
-				framesCount = (tileHeight / singleframe.imageHeight)-1, //-1 to remove last frame, avoid flashing
+				framesCount = Math.floor((tileHeight / singleframe.imageHeight))-1, //-1 to remove last frame, avoid flashing
 				spacing = singleframe.imageWidth / framesCount;
+
+			console.log('Framescount:', framesCount);
 
 			return {
 				tileHeight: tileHeight,
@@ -133,7 +140,7 @@
 			if(activeFrame <= geef.tiles.framesCount) {
 				geef.posTop = -Math.abs(activeFrame * geef.imageHeight);
 				geef.image.css('top', geef.posTop + 'px');
-				// console.log('scrubbed to', geef.image.css('top'));
+				console.log('scrubbed to frame', activeFrame);
 				animateTimeline(geef, percentagePosX);	
 			}
 		}
@@ -150,7 +157,7 @@
 				perc = (Math.abs(geef.posTop) / geef.tiles.tileHeight) * 100;
 				geef.posTop -= geef.imageHeight;
 				geef.image.css('top', geef.posTop + 'px');
-				// console.log('Frame:', activeFrame + ' Position:', geef.posTop);
+				console.log('Frame:', activeFrame + ' Position:', geef.posTop + ' Perc:', perc);
 				animateTimeline(geef, perc);
 				activeFrame++;
 				if (geef.posTop <= -geef.tiles.tileHeight) {
@@ -161,6 +168,7 @@
 
 		//DEBUG function - used to append segment tiles on image
 		function appendPoints(geef) {
+			console.info(geef.tiles);
 			for(var i = 0; i < geef.tiles.framesCount; i++) {
 				$(geef).append('<div class="line" style="width:'+ geef.tiles.spacing +'px; left:'+ i*geef.tiles.spacing +'px"></div>');
 			}
