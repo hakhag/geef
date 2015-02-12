@@ -2,7 +2,7 @@
 
 	$.fn.geef = function(options){
 		var defaults = {
-			speed: 45,
+			speed: 300,
 			responsive: false,
 			tileImagePostfix: '_tile',
 			filetype: 'jpg'
@@ -109,7 +109,7 @@
 
 		function initTiles(singleframe, tiles) {
 			var tileHeight = $(tiles).innerHeight(),
-				framesCount = Math.floor((tileHeight / singleframe.imageHeight))-1, //-1 to remove last frame, avoid flashing
+				framesCount = Math.floor((tileHeight / singleframe.imageHeight)), //-1 to remove last frame, avoid flashing
 				spacing = singleframe.imageWidth / framesCount;
 
 			console.log('Framescount:', framesCount);
@@ -135,13 +135,14 @@
 		function scrubToFrame(e, geef) {
 			var posX = e.pageX - $(geef.wrapper).offset().left,
 				percentagePosX = Math.ceil((posX * 100) / geef.imageWidth),	
-				activeFrame = Math.ceil((posX / geef.tiles.spacing));
+				activeFrame = (Math.ceil((posX / geef.tiles.spacing))+1);
 
 			if(activeFrame <= geef.tiles.framesCount) {
 				geef.posTop = -Math.abs(activeFrame * geef.imageHeight);
 				geef.image.css('top', geef.posTop + 'px');
-				console.log('scrubbed to frame', activeFrame);
-				animateTimeline(geef, percentagePosX);	
+				animateTimeline(geef, percentagePosX);
+				console.info('Frame:', activeFrame + '\n Position:', geef.posTop + '\n Perc:', percentagePosX);
+				console.log('------------------------------');
 			}
 		}
 
@@ -154,14 +155,20 @@
 			geef.controls.controlIcon.removeClass('fa-play').addClass('fa-pause');
 			
 			geef.interval = setInterval(function(){
-				perc = (Math.abs(geef.posTop) / geef.tiles.tileHeight) * 100;
-				geef.posTop -= geef.imageHeight;
+				perc = Math.ceil((Math.abs(geef.posTop) / geef.tiles.tileHeight) * 100);
+				if(activeFrame === 1) {
+					geef.posTop = 0;
+				} else {
+					geef.posTop -= geef.imageHeight;
+				}
 				geef.image.css('top', geef.posTop + 'px');
-				console.log('Frame:', activeFrame + ' Position:', geef.posTop + ' Perc:', perc);
+				console.log('Frame:', activeFrame + '\n Position:', geef.posTop + '\n Perc:', perc);
+				console.log('------------------------------');
 				animateTimeline(geef, perc);
 				activeFrame++;
 				if (geef.posTop <= -geef.tiles.tileHeight) {
 					geef.posTop = 0;
+					activeFrame = 1;
 				}
 			}, settings.speed);
 		}
